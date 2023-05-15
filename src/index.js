@@ -43,8 +43,9 @@ app.get('/api/chatbot/:message', async (req, res) => {
 
   const responses = await sessionClient.detectIntent(request);
   const result = responses[0].queryResult;
+  console.log(responses);
   const responseMessage = result.fulfillmentText;
-
+  console.log(responseMessage);
   res.send(`<p>${responseMessage}</p>`);
 });
 
