@@ -19,3 +19,4 @@ npm i dialogflow
 ```
 node src/index.js
 ```
+[chatbot_Nodejs.pdf](https://github.com/fallabdouaziz/chatboot-api/files/11499350/chatbot_Nodejs.pdf)
