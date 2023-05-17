@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dialogflow = require('dialogflow');
+const axios = require('axios');
 
 const app = express();
 const port = 3000;
@@ -21,15 +22,13 @@ app.get('/api/chatbot/:message', async (req, res) => {
   const languageCode = 'fr';
 
   const sessionClient = new dialogflow.SessionsClient(
-/*    credentials: {
-      private_key: '5678d6588c8f80492b097663569fac22da0b6c1f',
-      client_email: 'medi-726@test-1-yqqw.iam.gserviceaccount.com'
-    }*/
+      /*    credentials: {
+            private_key: '5678d6588c8f80492b097663569fac22da0b6c1f',
+            client_email: 'medi-726@test-1-yqqw.iam.gserviceaccount.com'
+          }*/
   );
 
-
   const sessionPath = sessionClient.sessionPath(projectId, sessionId);
-
 
   const request = {
     session: sessionPath,
@@ -43,10 +42,52 @@ app.get('/api/chatbot/:message', async (req, res) => {
 
   const responses = await sessionClient.detectIntent(request);
   const result = responses[0].queryResult;
+  const intent = result.intent.displayName;
+  const parameter = result.parameters.fields;
   const responseMessage = result.fulfillmentText;
 
-  res.send(`<p>${responseMessage}</p>`);
+  let address = "";
+  if (intent.includes('restaurant - select.name')) {
+    let name_rest = result.parameters.fields.Restaurants_Lyon1.stringValue;
+    address = await getAddressFromRestaurantName(name_rest);
+  }
+
+
+
+
+  // res.send(`{\n IntentName : "${intent}", \n patameters :"${parameter}", \n output :"${responseMessage}", \n address :"${address}"}`);
+  if(address == ''){
+    res.json({
+      output: responseMessage
+    });
+  }else{
+    res.json({
+      output: responseMessage,
+      address: address
+    });
+  }
+
 });
+
+
+async function getAddressFromRestaurantName(restaurantName) {
+  const apiKey = 'AIzaSyBqOwi5GsKRFboz2MrK5czZpPhupjWL3Uk';
+
+  try {
+    const response = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${restaurantName}&inputtype=textquery&fields=formatted_address&key=${apiKey}`);
+    const result = response.data;
+    console.log(result);
+    if (result.status === 'OK' && result.candidates.length > 0) {
+      const address = result.candidates[0].formatted_address;
+      return address;
+    } else {
+      throw new Error('Failed to retrieve address from Google Maps API');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+    return "";
+  }
+}
 
 app.listen(port, () => {
   console.log(`Serveur démarré sur le port ${port}`);
