@@ -7,3 +7,15 @@ node version : 18.16
 ```
 npm install
 ```
+* Installer Axios pour les requetes http
+```
+npm i axios
+```
+*Installer dialogfloz
+```
+npm i dialogflow
+```
+* Lancer le serveur avec la commande
+```
+node src/index.js
+```
