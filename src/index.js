@@ -71,7 +71,7 @@ app.get('/api/chatbot/:message', async (req, res) => {
 
 
 async function getAddressFromRestaurantName(restaurantName) {
-  const apiKey = 'AIzaSyBqOwi5GsKRFboz2MrK5czZpPhupjWL3Uk';
+  const apiKey = 'clé de l'api';
 
   try {
     const response = await axios.get(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${restaurantName}&inputtype=textquery&fields=formatted_address&key=${apiKey}`);
