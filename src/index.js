@@ -23,7 +23,7 @@ app.get('/api/chatbot/:message', async (req, res) => {
 
   const sessionClient = new dialogflow.SessionsClient(
       /*    credentials: {
-            private_key: '5678d6588c8f80492b097663569fac22da0b6c1f',
+            private_key: '',
             client_email: 'medi-726@test-1-yqqw.iam.gserviceaccount.com'
           }*/
   );
